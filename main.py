@@ -1,7 +1,7 @@
 import time
 
 import supriya
-from supriya import Envelope, synthdef
+from supriya import Envelope, synthdef, Options
 from supriya.ugens import EnvGen, Out, SinOsc, LFTri
 
 
@@ -55,7 +55,7 @@ def play(server, note):
 
 def main():
     server = supriya.Server()
-    server.boot()
+    server.boot(options=Options(output_device='MME : Surface Omnisonic Speakers'))
     server.add_synthdefs(simple_sine)
     server.sync()
     for note in parse_notes(BACH):
