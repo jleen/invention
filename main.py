@@ -2,7 +2,7 @@ import time
 
 import supriya
 from supriya import Envelope, synthdef
-from supriya.ugens import EnvGen, Out, SinOsc
+from supriya.ugens import EnvGen, Out, SinOsc, LFTri
 
 
 NOTES = [ 'A', 'A#', 'B', 'C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#' ]
@@ -36,15 +36,16 @@ def parse_notes(score):
 @synthdef()
 def simple_sine(frequency=440, amplitude=0.1, gate=1):
     sine = SinOsc.ar(frequency=frequency) * amplitude
+    tri = LFTri.ar(frequency=frequency/2, initial_phase=0.15)
     envelope = EnvGen.kr(envelope=Envelope.adsr(), gate=gate, done_action=2)
-    Out.ar(bus=0, source=[sine * envelope] * 2)
+    Out.ar(bus=0, source=[sine * tri * envelope] * 2)
 
 
 def play(server, note):
     (freq, dur) = note
     synth = server.add_synth(
         add_action=supriya.AddAction.ADD_TO_HEAD,
-        amplitude=1,
+        amplitude=0.1,
         frequency=freq,
         synthdef=simple_sine,
         target_node=None)
